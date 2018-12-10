@@ -1,8 +1,9 @@
 FROM alpine:latest as builder
-MAINTAINER Shawn Zhang <hustshawn@gmail.com>
+MAINTAINER Shawn Zhang <shawnzhang@lionfin.com.hk>
 
 # Latest stable version
 ARG OPENCC_VERSION="ver.1.0.5"
+
 RUN apk add cmake doxygen g++ make git python \
     && cd /tmp && git clone https://github.com/BYVoid/OpenCC.git && cd OpenCC \
     && git checkout -b ${OPENCC_VERSION} \
@@ -13,12 +14,17 @@ RUN apk add cmake doxygen g++ make git python \
     && apk del make doxygen cmake
 
 FROM openresty/openresty:1.13.6.2-alpine
-MAINTAINER Shawn Zhang <hustshawn@gmail.com>
+MAINTAINER Shawn Zhang <shawnzhang@lionfin.com.hk>
 
-# Set timezone
-ENV TZ=Asia/Hong_Kong
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# COPY opencc binary
 COPY --from=builder /usr/lib64 /usr/lib64
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/share/opencc /usr/share/opencc
 COPY --from=builder /usr/bin/opencc* /usr/bin/
+
+# Set timezone
+ENV TZ=Asia/Hong_Kong
+RUN apk add tzdata && \
+    cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo ${TZ} > /etc/timezone && \
+    apk del tzdata

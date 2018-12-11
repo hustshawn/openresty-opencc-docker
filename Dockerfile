@@ -26,5 +26,6 @@ COPY --from=builder /usr/bin/opencc* /usr/bin/
 ENV TZ=Asia/Hong_Kong
 RUN apk add tzdata && \
     cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
-    echo ${TZ} > /etc/timezone && \
-    apk del tzdata
+    echo ${TZ} > /etc/timezone
+    # echo ${TZ} > /etc/timezone && \
+    # apk del tzdata

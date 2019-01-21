@@ -1,5 +1,5 @@
 FROM alpine:latest as builder
-LABEL MAINTAINER="Shawn Zhang <shawnzhang@lionfin.com.hk>"
+LABEL MAINTAINER="Shawn Zhang <hustshawn@gmail.com>"
 
 # Latest stable version
 ARG OPENCC_VERSION="ver.1.0.5"
